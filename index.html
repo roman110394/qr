@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Переход в мессенджер</title>
+</head>
+<body style="font-family:sans-serif;text-align:center;padding-top:20vh;">
+  <a id="btn" style="display:inline-block;padding:18px 32px;background:#0088cc;color:#fff;text-decoration:none;border-radius:12px;font-size:20px;">Открыть чат</a>
+  <script>
+    const p = new URLSearchParams(location.search);
+    const tg = p.get('tg'), wa = p.get('wa');
+    const url = tg ? `tg://resolve?phone=${tg}` : (wa ? `whatsapp://send?phone=${wa}` : '');
+    if (url) {
+      document.getElementById('btn').href = url;
+      location.href = url;
+    }
+  </script>
+</body>
+</html>
