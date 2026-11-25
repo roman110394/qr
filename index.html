@@ -4,145 +4,158 @@
   ( o.o )  < Мяу! Ты заглянул в исходный код!
    > ^ <     Тут нет майнеров и слежки, только быстрый переход в мессенджеры,
              чтобы не сохранять лишние номера в записную книжку.
-             Любишь смотреть код? Заглядывай в другие мои проекты: https://github.com/roman110394
+             Любишь смотреть код? Другие мои проекты: https://github.com
 -->
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Телепорт в мессенджер 🚀</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 90vh;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      user-select: none;
-    }
-    .card {
-      background: #1e293b;
-      padding: 32px 24px;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      max-width: 360px;
-      width: 100%;
-    }
-    .emoji {
-      font-size: 54px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: transform 0.2s;
-      display: inline-block;
-    }
-    .emoji:active { transform: scale(1.3) rotate(15deg); }
-    h1 { font-size: 20px; margin: 0 0 8px; }
-    p { font-size: 14px; color: #94a3b8; margin: 0 0 24px; line-height: 1.4; }
-    .btn {
-      display: inline-block;
-      padding: 16px 28px;
-      background: #0088cc;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 14px;
-      font-size: 17px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.15s, background 0.2s;
-    }
-    .btn:active { transform: scale(0.96); }
-    .btn-wa { background: #25D366; color: #0f172a; }
-    .secret { margin-top: 24px; font-size: 11px; color: #475569; }
-    .secret a { color: #64748b; text-decoration: none; }
-    .secret a:hover { text-decoration: underline; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Если ты читаешь этот комментарий — хорошего тебе дня и поменьше багов в проде! ☕ -->
-  <div class="card">
-    <div class="emoji" id="icon" title="Потыкай меня">🛸</div>
-    <h1 id="title">Запускаем телепорт...</h1>
-    <p id="desc">Перекидываем номер прямо в приложение мессенджера без лишних кликов.</p>
-    <a id="btn" class="btn" href="#">Открыть чат</a>
-    <div class="secret" id="secret">
-      Сделано с душой ✨ · <a href="https://github.com" target="_blank">GitHub</a>
+  <!-- Привет, исследователь кода! Другие проекты: https://github.com -->
+  <div class="card" id="card">
+    <div class="fill-bg" id="fillBg"></div>
+    <div class="card-content">
+      <div class="emoji" id="icon" title="Потыкай меня">🛸</div>
+      <h1 id="title">Запускаем телепорт...</h1>
+      <p id="desc">Перекидываем номер прямо в приложение мессенджера без лишних кликов.</p>
+      <div class="dossier" id="dossier"></div>
+      <div class="btn-wrap">
+        <a id="btn" class="btn" href="#">Открыть чат</a>
+      </div>
+      <div class="secret" id="secret">
+        Сделано с душой ✨ · <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
     </div>
   </div>
 
-  <!-- Здесь могла бы быть ваша реклама, но тут просто закрывающий div -->
-
   <script>
-    // Пасхалка в консоли разработчика (F12 -> Console)
-    console.log(
-      '%c🛸 Секретный шлюз активирован! %cЛюбишь копаться в коде? Другие проекты тут: https://github.com',
-      'color: #38bdf8; font-size: 15px; font-weight: bold;',
-      'color: #94a3b8; font-size: 12px;'
-    );
+    console.log('%c🛸 Секретный шлюз! Другие проекты: https://github.com', 'color:#38bdf8;font-size:14px;font-weight:bold;');
 
     const p = new URLSearchParams(location.search);
     const tg = p.get('tg'), wa = p.get('wa');
-    const btn = document.getElementById('btn');
-    const title = document.getElementById('title');
-    const desc = document.getElementById('desc');
-    const icon = document.getElementById('icon');
-    const secret = document.getElementById('secret');
+    const card = document.getElementById('card'), btn = document.getElementById('btn');
+    const title = document.getElementById('title'), desc = document.getElementById('desc');
+    const icon = document.getElementById('icon'), dossier = document.getElementById('dossier');
+    const secret = document.getElementById('secret'), fillBg = document.getElementById('fillBg');
+
+    function spawnCoin(x, y, text) {
+      const el = document.createElement('div');
+      el.className = 'coin';
+      el.textContent = text || '+1 🪙';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 900);
+    }
 
     if (tg) {
-      // Прямой вызов локального приложения Telegram по URI-схеме
-      const url = `tg://resolve?phone=${tg}`;
+      const url = 'tg://resolve?phone=' + tg;
       icon.textContent = '✈️';
       title.textContent = 'Летим в Telegram!';
-      desc.textContent = `Номер +${tg}. Если приложение не открылось само — жми на кнопку:`;
+      desc.textContent = 'Номер +' + tg + '. Если приложение не открылось — жми кнопку:';
       btn.textContent = 'Открыть в Telegram';
       btn.href = url;
       location.href = url;
     } else if (wa) {
-      // Прямой вызов локального приложения WhatsApp по URI-схеме
-      const url = `whatsapp://send?phone=${wa}`;
+      const url = 'whatsapp://send?phone=' + wa;
       icon.textContent = '💬';
       title.textContent = 'Прыгаем в WhatsApp!';
-      desc.textContent = `Номер +${wa}. Если чат не открылся сам — жми на кнопку:`;
+      desc.textContent = 'Номер +' + wa + '. Если чат не открылся — жми кнопку:';
       btn.textContent = 'Открыть в WhatsApp';
       btn.classList.add('btn-wa');
       btn.href = url;
       location.href = url;
     } else {
-      // Мини-игра, если зашли на страницу просто так без номера
-      const phrases = [
-        'Ой, а номера-то нет! 🤷‍♂️',
-        'Я же сказал: номера нет!',
-        'Ты зачем сюда тыкаешь?',
-        'Ладно, держи секретную ачивку 🏆',
-        'Поздравляю, ты сломал кнопку!',
-        'Хватит тапать, это не хомяк 🐹'
-      ];
-      let clicks = 0;
+      let dodges = 0, stage = 'dodge', coins = 0;
+      const maxDodges = 3, goal = 15;
+      const dodgePhrases = ['Не поймаешь! 😜', 'Почти! 🏃‍♂️', 'Ой, мимо! ⚡'];
+
       icon.textContent = '🕵️‍♂️';
       title.textContent = 'Секретный шлюз';
-      desc.textContent = 'Эта страница умеет телепортировать номера в мессенджеры, но сейчас в ссылке пусто.';
+      desc.textContent = 'Эта страница умеет телепортировать номера, но сейчас в ссылке пусто.';
       btn.textContent = 'Не нажимать!';
-      btn.onclick = (e) => {
+
+      const dodgeAction = (e) => {
+        if (dodges < maxDodges) {
+          if (e) e.preventDefault();
+          btn.style.transform = 'translate(' + ((Math.random() - 0.5) * 140) + 'px,' + ((Math.random() - 0.5) * 50) + 'px)';
+          btn.textContent = dodgePhrases[dodges++];
+        }
+      };
+
+      btn.addEventListener('mouseenter', dodgeAction);
+      btn.addEventListener('touchstart', (e) => { if (dodges < maxDodges) { e.preventDefault(); dodgeAction(); } }, { passive: false });
+
+      btn.onclick = async (e) => {
         e.preventDefault();
-        clicks++;
-        btn.textContent = phrases[Math.min(clicks, phrases.length - 1)];
-        icon.textContent = clicks >= 5 ? '🐹' : '👀';
-        if (clicks === 10) secret.innerHTML = 'Пасхалка найдена: код 7355608 💣 · <a href="https://github.com" target="_blank">GitHub</a>';
+        if (dodges < maxDodges) { dodgeAction(); return; }
+        btn.style.transform = 'translate(0,0)';
+
+        if (stage === 'dodge') {
+          stage = 'fbi';
+          card.classList.add('alert');
+          icon.textContent = '🚨';
+          title.textContent = 'Ну всё, ты доигрался!';
+          desc.textContent = 'Передаю твои данные на сервер fbi.gov...';
+          btn.classList.add('btn-danger');
+          btn.textContent = 'Отмена! Отмена! 😱';
+
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Неизвестно';
+          dossier.style.display = 'block';
+          dossier.innerHTML = '> IP-адрес: <b>определяю...</b><br>> Система: ' + (navigator.platform || 'OS') + ' (' + (navigator.language || 'ru') + ')<br>> Экран: ' + screen.width + 'x' + screen.height + '<br>> Часовой пояс: ' + tz + '<br>> Статус: <b>Отправка пакета...</b>';
+
+          try {
+            const res = await fetch('https://ipify.org');
+            const data = await res.json();
+            if (stage === 'fbi') dossier.innerHTML = dossier.innerHTML.replace('определяю...', data.ip);
+          } catch (_) {
+            if (stage === 'fbi') dossier.innerHTML = dossier.innerHTML.replace('определяю...', '127.0.0.1 (скрыт)');
+          }
+          return;
+        }
+
+        if (stage === 'fbi') {
+          stage = 'hamster';
+          card.classList.remove('alert');
+          dossier.style.display = 'none';
+          btn.classList.remove('btn-danger');
+          btn.classList.add('btn-hamster');
+        }
+
+        coins++;
+        spawnCoin(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
+        fillBg.style.height = Math.min((coins / goal) * 100, 100) + '%';
+
+        if (coins === 1) {
+          icon.textContent = '🐹';
+          title.textContent = 'О, а ты ловкий и смелый!';
+          desc.textContent = 'Ладно, шучу, данные никуда не ушли 😄 Раз поймал — тапай хомяка!';
+          btn.textContent = 'Тапать! (1 / ' + goal + ') 🪙';
+        } else if (coins < goal) {
+          icon.style.transform = 'scale(' + (1 + (coins % 2) * 0.15) + ')';
+          btn.textContent = 'Тапать! (' + coins + ' / ' + goal + ') 🪙';
+        } else if (coins === goal) {
+          icon.textContent = '👑';
+          title.textContent = 'Хранилище заполнено!';
+          desc.textContent = 'Поздравляю, ты прошёл секретную страницу телепорта.';
+          btn.textContent = 'Листинг пройден 🎉';
+          secret.innerHTML = 'Пасхалка найдена: код 7355608 🏆 · <a href="https://github.com" target="_blank">GitHub</a>';
+          for (let i = 0; i < 18; i++) {
+            setTimeout(() => spawnCoin(Math.random() * innerWidth, innerHeight * 0.7, i % 2 ? '✨' : '🪙'), i * 60);
+          }
+        } else {
+          btn.textContent = 'Натапано: ' + coins + ' 🪙';
+        }
       };
     }
 
-    // Вторая пасхалка: клик по смайлику 5 раз включает режим турбо
     let iconClicks = 0;
     icon.onclick = () => {
-      iconClicks++;
-      if (iconClicks === 5) {
-        secret.innerHTML = '🚀 Режим турбо-телепорта активирован! · <a href="https://github.com" target="_blank">GitHub</a>';
+      if (++iconClicks === 5) {
+        secret.innerHTML = '🚀 Турбо-режим активирован! · <a href="https://github.com" target="_blank">GitHub</a>';
         document.body.style.background = '#1e1b4b';
       }
     };
